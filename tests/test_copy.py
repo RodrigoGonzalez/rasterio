@@ -18,11 +18,7 @@ def test_copy(tmpdir, path_rgb_byte_tif, pass_handle):
 
     outfile = str(tmpdir.join('test_copy.tif'))
 
-    if pass_handle:
-        src = rasterio.open(path_rgb_byte_tif)
-    else:
-        src = path_rgb_byte_tif
-
+    src = rasterio.open(path_rgb_byte_tif) if pass_handle else path_rgb_byte_tif
     rasterio.copy(
         src,
         outfile,

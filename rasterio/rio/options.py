@@ -87,18 +87,15 @@ def _cb_key_val(ctx, param, value):
 
     if not value:
         return {}
-    else:
-        out = {}
-        for pair in value:
-            if '=' not in pair:
-                raise click.BadParameter(
-                    "Invalid syntax for KEY=VAL arg: {}".format(pair))
-            else:
-                k, v = pair.split('=', 1)
-                k = k.lower()
-                v = v.lower()
-                out[k] = None if v.lower() in ['none', 'null', 'nil', 'nada'] else v
-        return out
+    out = {}
+    for pair in value:
+        if '=' not in pair:
+            raise click.BadParameter(f"Invalid syntax for KEY=VAL arg: {pair}")
+        k, v = pair.split('=', 1)
+        k = k.lower()
+        v = v.lower()
+        out[k] = None if v.lower() in ['none', 'null', 'nil', 'nada'] else v
+    return out
 
 
 def abspath_forward_slashes(path):
@@ -126,7 +123,7 @@ def file_in_handler(ctx, param, value):
             path = abspath_forward_slashes(path)
         return path
     except Exception:
-        raise click.BadParameter("{} is not a valid input file".format(value))
+        raise click.BadParameter(f"{value} is not a valid input file")
 
 
 def from_like_context(ctx, param, value):
@@ -150,8 +147,6 @@ def like_handler(ctx, param, value):
             ctx.obj['like'] = metadata
             ctx.obj['like']['transform'] = metadata['transform']
             ctx.obj['like']['tags'] = src.tags()
-    else:  # pragma: no cover
-        pass
 
 
 def nodata_handler(ctx, param, value):
@@ -185,18 +180,17 @@ def edit_nodata_handler(ctx, param, value):
 def bounds_handler(ctx, param, value):
     """Handle different forms of bounds."""
     retval = from_like_context(ctx, param, value)
-    if retval is None and value is not None:
-        try:
-            value = value.strip(', []')
-            retval = tuple(float(x) for x in re.split(r'[,\s]+', value))
-            assert len(retval) == 4
-            return retval
-        except:
-            raise click.BadParameter(
-                "{0!r} is not a valid bounding box representation".format(
-                    value))
-    else:  # pragma: no cover
+    if retval is not None or value is None:
         return retval
+    try:
+        value = value.strip(', []')
+        retval = tuple(float(x) for x in re.split(r'[,\s]+', value))
+        assert len(retval) == 4
+        return retval
+    except:
+        raise click.BadParameter(
+            "{0!r} is not a valid bounding box representation".format(
+                value))
 
 
 # Singular input file

@@ -55,8 +55,8 @@ def gdal_version_cb(ctx, param, value):
     ctx.exit()
 
 
-@with_plugins(ep for ep in list(iter_entry_points('rasterio.rio_commands')) +
-              list(iter_entry_points('rasterio.rio_plugins')))
+@with_plugins(iter(list(iter_entry_points('rasterio.rio_commands')) +
+              list(iter_entry_points('rasterio.rio_plugins'))))
 @click.group()
 @cligj.verbose_opt
 @cligj.quiet_opt
@@ -71,8 +71,10 @@ def main_group(ctx, verbose, quiet, aws_profile, gdal_version):
     """
     verbosity = verbose - quiet
     configure_logging(verbosity)
-    ctx.obj = {}
-    ctx.obj['verbosity'] = verbosity
-    ctx.obj['aws_profile'] = aws_profile
-    ctx.obj['env'] = rasterio.Env(CPL_DEBUG=(verbosity > 2),
-                                  profile_name=aws_profile)
+    ctx.obj = {
+        'verbosity': verbosity,
+        'aws_profile': aws_profile,
+        'env': rasterio.Env(
+            CPL_DEBUG=(verbosity > 2), profile_name=aws_profile
+        ),
+    }

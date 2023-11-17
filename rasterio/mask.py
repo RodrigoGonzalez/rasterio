@@ -167,11 +167,7 @@ def mask(raster, shapes, all_touched=False, invert=False, nodata=None,
     """
 
     if nodata is None:
-        if raster.nodata is not None:
-            nodata = raster.nodata
-        else:
-            nodata = 0
-
+        nodata = raster.nodata if raster.nodata is not None else 0
     shape_mask, transform, window = raster_geometry_mask(
         raster, shapes, all_touched=all_touched, invert=invert, crop=crop,
         pad=pad)

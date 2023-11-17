@@ -238,27 +238,24 @@ def getenv():
     """Get a mapping of current options."""
     if not local._env:
         raise EnvError("No GDAL environment exists")
-    else:
-        log.debug("Got a copy of environment %r options", local._env)
-        return local._env.options.copy()
+    log.debug("Got a copy of environment %r options", local._env)
+    return local._env.options.copy()
 
 
 def setenv(**options):
     """Set options in the existing environment."""
     if not local._env:
         raise EnvError("No GDAL environment exists")
-    else:
-        local._env.update_config_options(**options)
-        log.debug("Updated existing %r with options %r", local._env, options)
+    local._env.update_config_options(**options)
+    log.debug("Updated existing %r with options %r", local._env, options)
 
 
 def delenv():
     """Delete options in the existing environment."""
     if not local._env:
         raise EnvError("No GDAL environment exists")
-    else:
-        local._env.clear_config_options()
-        log.debug("Cleared existing %r options", local._env)
+    local._env.clear_config_options()
+    log.debug("Cleared existing %r options", local._env)
     local._env.stop()
     local._env = None
 
@@ -268,9 +265,9 @@ def ensure_env(f):
     calls any GDAL C functions."""
     if local._env:
         return f
-    else:
-        @wraps(f)
-        def wrapper(*args, **kwds):
-            with Env():
-                return f(*args, **kwds)
-        return wrapper
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        with Env():
+            return f(*args, **kwds)
+
+    return wrapper

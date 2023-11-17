@@ -170,8 +170,7 @@ class DatasetReader(DatasetReaderBase, WindowMethodsMixin,
     """An unbuffered data and metadata reader"""
 
     def __repr__(self):
-        return "<{} DatasetReader name='{}' mode='{}'>".format(
-            self.closed and 'closed' or 'open', self.name, self.mode)
+        return f"<{self.closed and 'closed' or 'open'} DatasetReader name='{self.name}' mode='{self.mode}'>"
 
 
 class DatasetWriter(DatasetWriterBase, WindowMethodsMixin,
@@ -181,8 +180,7 @@ class DatasetWriter(DatasetWriterBase, WindowMethodsMixin,
     """
 
     def __repr__(self):
-        return "<{} DatasetWriter name='{}' mode='{}'>".format(
-            self.closed and 'closed' or 'open', self.name, self.mode)
+        return f"<{self.closed and 'closed' or 'open'} DatasetWriter name='{self.name}' mode='{self.mode}'>"
 
 
 class BufferedDatasetWriter(BufferedDatasetWriterBase, WindowMethodsMixin,
@@ -195,8 +193,7 @@ class BufferedDatasetWriter(BufferedDatasetWriterBase, WindowMethodsMixin,
     """
 
     def __repr__(self):
-        return "<{} BufferedDatasetWriter name='{}' mode='{}'>".format(
-            self.closed and 'closed' or 'open', self.name, self.mode)
+        return f"<{self.closed and 'closed' or 'open'} BufferedDatasetWriter name='{self.name}' mode='{self.mode}'>"
 
 
 class MemoryFile(MemoryFileBase):
@@ -258,12 +255,11 @@ class MemoryFile(MemoryFileBase):
             raise IOError("I/O operation on closed file.")
         if self.exists():
             return DatasetReader(vsi_path, 'r+')
-        else:
-            writer = get_writer_for_driver(driver)
-            return writer(vsi_path, 'w', driver=driver, width=width,
-                          height=height, count=count, crs=crs,
-                          transform=transform, dtype=dtype,
-                          nodata=nodata, **kwargs)
+        writer = get_writer_for_driver(driver)
+        return writer(vsi_path, 'w', driver=driver, width=width,
+                      height=height, count=count, crs=crs,
+                      transform=transform, dtype=dtype,
+                      nodata=nodata, **kwargs)
 
     def __enter__(self):
         return self

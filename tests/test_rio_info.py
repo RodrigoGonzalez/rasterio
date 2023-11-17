@@ -390,7 +390,7 @@ def test_info():
     info = json.loads(result.output)
     assert info['count'] == 1
     assert info['dtype'] == 'float64'
-    assert info['crs'] == None
+    assert info['crs'] is None
 
 
 def test_info_units():

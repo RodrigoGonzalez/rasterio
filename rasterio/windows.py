@@ -50,10 +50,7 @@ def iter_args(function):
 
 def toranges(window):
     """Normalize Windows to range tuples"""
-    if isinstance(window, Window):
-        return window.toranges()
-    else:
-        return window
+    return window.toranges() if isinstance(window, Window) else window
 
 
 def get_data_window(arr, nodata=None):
@@ -594,13 +591,12 @@ class Window(object):
         -------
         Window
         """
-        operator = getattr(math, op, None)
-        if not operator:
-            raise WindowError("operator must be 'ceil' or 'floor'")
-        else:
+        if operator := getattr(math, op, None):
             return Window(self.col_off, self.row_off,
                           operator(round(self.width, pixel_precision)),
                           operator(round(self.height, pixel_precision)))
+        else:
+            raise WindowError("operator must be 'ceil' or 'floor'")
 
     round_shape = round_lengths
 
@@ -621,13 +617,12 @@ class Window(object):
         -------
         Window
         """
-        operator = getattr(math, op, None)
-        if not operator:
-            raise WindowError("operator must be 'ceil' or 'floor'")
-        else:
+        if operator := getattr(math, op, None):
             return Window(operator(round(self.col_off, pixel_precision)),
                           operator(round(self.row_off, pixel_precision)),
                           self.width, self.height)
+        else:
+            raise WindowError("operator must be 'ceil' or 'floor'")
 
     def crop(self, height, width):
         """Return a copy cropped to height and width"""

@@ -32,10 +32,10 @@ class CRS(_CRS):
 
     @property
     def is_epsg_code(self):
-        for val in self.values():
-            if isinstance(val, string_types) and val.lower().startswith('epsg'):
-                return True
-        return False
+        return any(
+            isinstance(val, string_types) and val.lower().startswith('epsg')
+            for val in self.values()
+        )
 
     def to_string(self):
         """Turn a parameter mapping into a more conventional PROJ.4 string.
@@ -45,14 +45,20 @@ class CRS(_CRS):
         and items where the value is otherwise not a str, int, or float are
         omitted.
         """
-        items = []
-        for k, v in sorted(filter(
-                lambda x: x[0] in all_proj_keys and x[1] is not False and (
-                    isinstance(x[1], (bool, int, float)) or
-                    isinstance(x[1], string_types)),
-                self.items())):
-            items.append("+" + "=".join(map(str, filter(
-                lambda y: (y or y == 0) and y is not True, (k, v)))))
+        items = [
+            "+"
+            + "=".join(
+                map(str, filter(lambda y: (y or y == 0) and y is not True, (k, v)))
+            )
+            for k, v in sorted(
+                filter(
+                    lambda x: x[0] in all_proj_keys
+                    and x[1] is not False
+                    and (isinstance(x[1], (bool, int, float, string_types))),
+                    self.items(),
+                )
+            )
+        ]
         return " ".join(items)
 
     @staticmethod
@@ -117,12 +123,12 @@ class CRS(_CRS):
         """
         if int(code) <= 0:
             raise ValueError("EPSG codes are positive integers")
-        return CRS(init="epsg:%s" % code, no_defs=True)
+        return CRS(init=f"epsg:{code}", no_defs=True)
 
     def __repr__(self):
         # Should use super() here, but what's the best way to be compatible
         # between Python 2 and 3?
-        return "CRS({})".format(dict.__repr__(self.data))
+        return f"CRS({dict.__repr__(self.data)})"
 
     def to_dict(self):
         return self.data
@@ -240,5 +246,6 @@ _param_data = """
 """
 
 _lines = filter(lambda x: len(x) > 1, _param_data.split("\n"))
-all_proj_keys = list(set(line.split()[0].lstrip("+").strip()
-                         for line in _lines)) + ['no_mayo']
+all_proj_keys = list(
+    {line.split()[0].lstrip("+").strip() for line in _lines}
+) + ['no_mayo']

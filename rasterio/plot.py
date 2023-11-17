@@ -28,8 +28,10 @@ def get_plt():
         import matplotlib.pyplot as plt
         return plt
     except (ImportError, RuntimeError):  # pragma: no cover
-        msg = "Could not import matplotlib\n"
-        msg += "matplotlib required for plotting functions"
+        msg = (
+            "Could not import matplotlib\n"
+            + "matplotlib required for plotting functions"
+        )
         raise ImportError(msg)
 
 
@@ -106,10 +108,7 @@ def show(source, with_bounds=True, contour=False, contour_label_kws=None,
     else:
         # The source is a numpy array reshape it to image if it has 3+ bands
         source = np.ma.squeeze(source)
-        if len(source.shape) >= 3:
-            arr = reshape_as_image(source)
-        else:
-            arr = source
+        arr = reshape_as_image(source) if len(source.shape) >= 3 else source
         if transform and with_bounds:
             kwargs['extent'] = plotting_extent(arr, transform)
     if adjust is True and arr.ndim >= 3:
@@ -166,7 +165,7 @@ def plotting_extent(source, transform=None):
             "transform is required if source is an array")
     else:
         transform = guard_transform(transform)
-        rows, cols = source.shape[0:2]
+        rows, cols = source.shape[:2]
         left, top = transform * (0, 0)
         right, bottom = transform * (cols, rows)
         extent = (left, right, bottom, top)
@@ -185,9 +184,7 @@ def reshape_as_image(arr):
     ----------
     source : array-like in a of format (bands, rows, columns)
     """
-    # swap the axes order from (bands, rows, columns) to (rows, columns, bands)
-    im = np.ma.transpose(arr, [1, 2, 0])
-    return im
+    return np.ma.transpose(arr, [1, 2, 0])
 
 
 def reshape_as_raster(arr):
@@ -199,9 +196,7 @@ def reshape_as_raster(arr):
     ----------
     arr : array-like in the image form of (rows, columns, bands)
     """
-    # swap the axes order from (rows, columns, bands) to (bands, rows, columns)
-    im = np.transpose(arr, [2, 0, 1])
-    return im
+    return np.transpose(arr, [2, 0, 1])
 
 
 def show_hist(source, bins=10, masked=True, title='Histogram', ax=None, **kwargs):

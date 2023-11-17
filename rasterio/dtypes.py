@@ -10,6 +10,7 @@ do something like this:
     if np.dtype(destination.dtype) == np.dtype(rasterio.uint8): ...
 """
 
+
 bool_ = 'bool'
 ubyte = uint8 = 'uint8'
 uint16 = 'uint16'
@@ -39,7 +40,7 @@ dtype_fwd = {
     10: complex64,      # GDT_CFloat32
     11: complex128}    # GDT_CFloat64
 
-dtype_rev = dict((v, k) for k, v in dtype_fwd.items())
+dtype_rev = {v: k for k, v in dtype_fwd.items()}
 dtype_rev['uint8'] = 1
 
 typename_fwd = {
@@ -56,7 +57,7 @@ typename_fwd = {
     10: 'CFloat32',
     11: 'CFloat64'}
 
-typename_rev = dict((v, k) for k, v in typename_fwd.items())
+typename_rev = {v: k for k, v in typename_fwd.items()}
 
 dtype_ranges = {
     'uint8': (0, 255),
@@ -107,23 +108,23 @@ def get_minimum_dtype(values):
     min_value = values.min()
     max_value = values.max()
 
-    if values.dtype.kind in ('i', 'u'):
-        if min_value >= 0:
-            if max_value <= 255:
-                return uint8
-            elif max_value <= 65535:
-                return uint16
-            elif max_value <= 4294967295:
-                return uint32
-        elif min_value >= -32768 and max_value <= 32767:
-            return int16
-        elif min_value >= -2147483648 and max_value <= 2147483647:
-            return int32
-
-    else:
-        if min_value >= -3.4028235e+38 and max_value <= 3.4028235e+38:
-            return float32
-        return float64
+    if values.dtype.kind not in ('i', 'u'):
+        return (
+            float32
+            if min_value >= -3.4028235e38 and max_value <= 3.4028235e38
+            else float64
+        )
+    if min_value >= 0:
+        if max_value <= 255:
+            return uint8
+        elif max_value <= 65535:
+            return uint16
+        elif max_value <= 4294967295:
+            return uint32
+    elif min_value >= -32768 and max_value <= 32767:
+        return int16
+    elif min_value >= -2147483648 and max_value <= 2147483647:
+        return int32
 
 
 def is_ndarray(array):

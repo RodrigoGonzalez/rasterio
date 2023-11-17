@@ -309,10 +309,10 @@ def tiffs(tmpdir):
         'driver': 'GTiff',
         'dtype': 'uint8',
         'height': 1,
-        'width': 1}
+        'width': 1,
+        'transform': Affine(1, 0, 1, 0, -1, 1),
+    }
 
-    kwargs['transform'] = Affine(1, 0, 1,
-                                 0, -1, 1)
     with rasterio.open(str(tmpdir.join('a-sw.tif')), 'w', **kwargs) as r:
         r.write(data * 40)
 

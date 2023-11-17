@@ -21,16 +21,11 @@ def main(raster_file, vector_file, driver, mask_value):
         with rasterio.open(raster_file) as src:
             image = src.read(1)
 
-        if mask_value is not None:
-            mask = image == mask_value
-        else:
-            mask = None
-
+        mask = image == mask_value if mask_value is not None else None
         results = (
             {'properties': {'raster_val': v}, 'geometry': s}
-            for i, (s, v)
-            in enumerate(
-                shapes(image, mask=mask, transform=src.transform)))
+            for s, v in shapes(image, mask=mask, transform=src.transform)
+        )
 
         with fiona.open(
                 vector_file, 'w',

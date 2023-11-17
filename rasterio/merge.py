@@ -58,7 +58,6 @@ def merge(sources, bounds=None, res=None, nodata=None, precision=7):
                 coordinate system
     """
     first = sources[0]
-    first_res = first.res
     nodataval = first.nodatavals[0]
     dtype = first.dtypes[0]
 
@@ -79,6 +78,7 @@ def merge(sources, bounds=None, res=None, nodata=None, precision=7):
     output_transform = Affine.translation(dst_w, dst_n)
     logger.debug("Output transform, before scaling: %r", output_transform)
 
+    first_res = first.res
     # Resolution/pixel size.
     if not res:
         res = first_res
@@ -119,10 +119,8 @@ def merge(sources, bounds=None, res=None, nodata=None, precision=7):
             dest.fill(nodataval)
         else:
             warnings.warn(
-                "Input file's nodata value, %s, is beyond the valid "
-                "range of its data type, %s. Consider overriding it "
-                "using the --nodata option for better results." % (
-                    nodataval, dtype))
+                f"Input file's nodata value, {nodataval}, is beyond the valid range of its data type, {dtype}. Consider overriding it using the --nodata option for better results."
+            )
     else:
         nodataval = 0
 
@@ -134,10 +132,10 @@ def merge(sources, bounds=None, res=None, nodata=None, precision=7):
         # 1. Compute spatial intersection of destination and source.
         src_w, src_s, src_e, src_n = src.bounds
 
-        int_w = src_w if src_w > dst_w else dst_w
-        int_s = src_s if src_s > dst_s else dst_s
-        int_e = src_e if src_e < dst_e else dst_e
-        int_n = src_n if src_n < dst_n else dst_n
+        int_w = max(src_w, dst_w)
+        int_s = max(src_s, dst_s)
+        int_e = min(src_e, dst_e)
+        int_n = min(src_n, dst_n)
 
         # 2. Compute the source window.
         src_window = windows.from_bounds(

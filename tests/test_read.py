@@ -152,7 +152,7 @@ class ReaderContextTest(unittest.TestCase):
             self.assertRaises(IndexError, s.read, 0)
             self.assertRaises(IndexError, s.read, [3, 4])
             # read slice
-            a = s.read(s.indexes[0:2])  # [RG]
+            a = s.read(s.indexes[:2])
             self.assertEqual(a.ndim, 3)
             self.assertEqual(a.shape, (2, 718, 791))
             self.assertEqual(a.sum((1, 2)).tolist(), [17008452, 25282412])

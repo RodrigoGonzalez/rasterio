@@ -33,14 +33,13 @@ def crs_handler(ctx, param, value):
         except ValueError:
             retval = value
         try:
-            if isinstance(retval, dict):
-                retval = CRS(retval)
-            else:
-                retval = CRS.from_string(retval)
+            retval = CRS(retval) if isinstance(retval, dict) else CRS.from_string(retval)
         except CRSError:
             raise click.BadParameter(
-                "'%s' is not a recognized CRS." % retval,
-                param=param, param_hint='crs')
+                f"'{retval}' is not a recognized CRS.",
+                param=param,
+                param_hint='crs',
+            )
     return retval
 
 
@@ -52,8 +51,10 @@ def tags_handler(ctx, param, value):
             retval = dict(p.split('=') for p in value)
         except:
             raise click.BadParameter(
-                "'%s' contains a malformed tag." % value,
-                param=param, param_hint='transform')
+                f"'{value}' contains a malformed tag.",
+                param=param,
+                param_hint='transform',
+            )
     return retval
 
 
@@ -69,8 +70,10 @@ def transform_handler(ctx, param, value):
             retval = guard_transform(value)
         except:
             raise click.BadParameter(
-                "'%s' is not recognized as an Affine array." % value,
-                param=param, param_hint='transform')
+                f"'{value}' is not recognized as an Affine array.",
+                param=param,
+                param_hint='transform',
+            )
     return retval
 
 
