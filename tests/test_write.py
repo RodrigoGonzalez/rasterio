@@ -62,9 +62,9 @@ def test_no_crs(tmpdir):
 def test_context(tmpdir):
     name = str(tmpdir.join("test_context.tif"))
     with rasterio.open(
-            name, 'w',
-            driver='GTiff', width=100, height=100, count=1,
-            dtype=rasterio.ubyte) as s:
+                name, 'w',
+                driver='GTiff', width=100, height=100, count=1,
+                dtype=rasterio.ubyte) as s:
         assert s.name == name
         assert s.driver == 'GTiff'
         assert not s.closed
@@ -73,13 +73,13 @@ def test_context(tmpdir):
         assert s.height == 100
         assert s.shape == (100, 100)
         assert s.indexes == (1,)
-        assert repr(s) == "<open DatasetWriter name='%s' mode='w'>" % name
+        assert repr(s) == f"<open DatasetWriter name='{name}' mode='w'>"
     assert s.closed
     assert s.count == 1
     assert s.width == 100
     assert s.height == 100
     assert s.shape == (100, 100)
-    assert repr(s) == "<closed DatasetWriter name='%s' mode='w'>" % name
+    assert repr(s) == f"<closed DatasetWriter name='{name}' mode='w'>"
     info = subprocess.check_output(["gdalinfo", name]).decode('utf-8')
     assert "GTiff" in info
     assert "Size is 100, 100" in info

@@ -363,8 +363,7 @@ def test_warp_reproject_dst_bounds(runner, tmpdir):
 
     with rasterio.open(outputname) as output:
         assert output.crs == {'init': 'epsg:4326'}
-        assert np.allclose(output.bounds[0::3],
-                           [-106.45036, 39.6278])
+        assert np.allclose(output.bounds[::3], [-106.45036, 39.6278])
         assert np.allclose([0.001, 0.001],
                            [output.transform.a, -output.transform.e])
 

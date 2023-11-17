@@ -357,8 +357,11 @@ def calculate_default_transform(src_crs, dst_crs, width, height,
         try:
             res = (float(resolution), float(resolution))
         except TypeError:
-            res = (resolution[0], resolution[0]) \
-                if len(resolution) == 1 else resolution[0:2]
+            res = (
+                (resolution[0], resolution[0])
+                if len(resolution) == 1
+                else resolution[:2]
+            )
 
         # Assume yres is provided as positive,
         # needs to be negative for north-up affine

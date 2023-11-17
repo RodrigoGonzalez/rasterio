@@ -91,7 +91,6 @@ def test_gdal_transform_notnull():
         bottom=30,
         right=-80,
         top=70)
-    assert True
 
 
 def test_gdal_transform_fail_dst_crs():

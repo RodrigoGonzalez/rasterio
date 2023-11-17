@@ -30,8 +30,7 @@ def flatten_coords(coordinates):
         if isinstance(elem, (float, int)):
             yield elem
         else:
-            for x in flatten_coords(elem):
-                yield x
+            yield from flatten_coords(elem)
 
 
 def supported_resampling(method):
@@ -45,9 +44,7 @@ def supported_resampling(method):
     version = parse(rasterio.__gdal_version__)
     if version < parse('1.10'):
         return method not in gdal2plus_only and method not in gdal110plus_only
-    if version < parse('2.0'):
-        return method not in gdal2plus_only
-    return True
+    return method not in gdal2plus_only if version < parse('2.0') else True
 
 
 reproj_expected = (
@@ -849,7 +846,7 @@ def test_transform_geom_linestring_precision_iso(polygon_3373):
 def test_transform_geom_linestring_precision_z(polygon_3373):
     ring = polygon_3373['coordinates'][0]
     x, y = zip(*ring)
-    ring = zip(x, y, [0.0 for i in range(len(x))])
+    ring = zip(x, y, [0.0 for _ in range(len(x))])
     geom = {'type': 'LineString', 'coordinates': ring}
     result = transform_geom('EPSG:3373', 'EPSG:3373', geom, precision=1)
     assert int(result['coordinates'][0][0] * 10) == 7988423

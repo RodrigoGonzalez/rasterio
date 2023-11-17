@@ -97,8 +97,7 @@ def shapes(image, mask=None, connectivity=4, transform=IDENTITY):
 
     """
     transform = guard_transform(transform)
-    for s, v in _shapes(image, mask, connectivity, transform.to_gdal()):
-        yield s, v
+    yield from _shapes(image, mask, connectivity, transform.to_gdal())
 
 
 @ensure_env

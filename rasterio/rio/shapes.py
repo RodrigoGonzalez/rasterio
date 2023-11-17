@@ -110,7 +110,8 @@ def shapes(
 
     bidx = 1 if bandidx is None and band else bandidx
 
-    # This is the generator for (feature, bbox) pairs.
+
+
     class Collection(object):
 
         def __init__(self, env):
@@ -152,7 +153,7 @@ def shapes(
                 # Most of the time, we'll use the valid data mask.
                 # We skip reading it if we're extracting every possible
                 # feature (even invalid data features) from a band.
-                if not band or (band and not as_mask and not with_nodata):
+                if not band or not as_mask and not with_nodata:
                     if sampling == 1:
                         msk = src.read_masks(bidx)
                     else:
@@ -228,6 +229,7 @@ def shapes(
                         'bbox': [min(xs), min(ys), max(xs), max(ys)],
                         'geometry': g
                     }
+
 
     if not sequence:
         geojson_type = 'collection'

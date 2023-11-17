@@ -151,11 +151,11 @@ def test_is_same_crs():
 
 
 def test_null_crs_equality():
-    assert (CRS() == CRS()) is False
+    assert CRS() != CRS()
 
 
 def test_null_and_valid_crs_equality():
-    assert (CRS() == CRS(init='EPSG:4326')) is False
+    assert CRS() != CRS(init='EPSG:4326')
 
 
 def test_to_string():

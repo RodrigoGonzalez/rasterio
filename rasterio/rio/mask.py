@@ -104,16 +104,15 @@ def mask(
                                                      crop=crop, invert=invert,
                                                      all_touched=all_touched)
             except ValueError as e:
-                if e.args[0] == 'Input shapes do not overlap raster.':
-                    if crop:
-                        raise click.BadParameter('not allowed for GeoJSON '
-                                                 'outside the extent of the '
-                                                 'input raster',
-                                                 param=crop,
-                                                 param_hint='--crop')
-                else: # pragma: no cover
+                if e.args[0] != 'Input shapes do not overlap raster.':
                     raise e
 
+                if crop:
+                    raise click.BadParameter('not allowed for GeoJSON '
+                                             'outside the extent of the '
+                                             'input raster',
+                                             param=crop,
+                                             param_hint='--crop')
             meta = src.meta.copy()
             meta.update(**creation_options)
             meta.update({

@@ -278,8 +278,7 @@ def open(fp, mode='r', driver=None, width=None, height=None, count=None,
                                                   dtype=dtype, nodata=nodata,
                                                   **kwargs)
             else:
-                raise ValueError(
-                    "mode must be one of 'r', 'r+', or 'w', not %s" % mode)
+                raise ValueError(f"mode must be one of 'r', 'r+', or 'w', not {mode}")
             return s
 
 

@@ -22,8 +22,7 @@ def coords(obj):
             yield tuple(coordinates)
             break
         else:
-            for f in coords(e):
-                yield f
+            yield from coords(e)
 
 
 def write_features(

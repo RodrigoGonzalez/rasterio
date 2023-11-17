@@ -157,11 +157,11 @@ def test_read(tmpdir, rgb_file_bytes):
         tmptiff = tmpdir.join('test.tif')
 
         while 1:
-            chunk = memfile.read(8192)
-            if not chunk:
-                break
-            tmptiff.write(chunk, 'ab')
+            if chunk := memfile.read(8192):
+                tmptiff.write(chunk, 'ab')
 
+            else:
+                break
     with rasterio.open(str(tmptiff)) as src:
         assert src.count == 3
 

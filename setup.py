@@ -147,19 +147,16 @@ gdal_minor_version = int(gdal_version_parts[1])
 if os.environ.get('PACKAGE_DATA'):
     destdir = 'rasterio/gdal_data'
     if gdal_output[2]:
-        log.info("Copying gdal data from %s" % gdal_output[2])
+        log.info(f"Copying gdal data from {gdal_output[2]}")
         copy_data_tree(gdal_output[2], destdir)
-    else:
-        # check to see if GDAL_DATA is defined
-        gdal_data = os.environ.get('GDAL_DATA', None)
-        if gdal_data:
-            log.info("Copying gdal_data from %s" % gdal_data)
-            copy_data_tree(gdal_data, destdir)
+    elif gdal_data := os.environ.get('GDAL_DATA', None):
+        log.info(f"Copying gdal_data from {gdal_data}")
+        copy_data_tree(gdal_data, destdir)
 
     # Conditionally copy PROJ.4 data.
     projdatadir = os.environ.get('PROJ_LIB', '/usr/local/share/proj')
     if os.path.exists(projdatadir):
-        log.info("Copying proj_data from %s" % projdatadir)
+        log.info(f"Copying proj_data from {projdatadir}")
         copy_data_tree(projdatadir, 'rasterio/proj_data')
 
 
@@ -193,7 +190,7 @@ ext_options = {
 #        ('GDAL_MAJOR_VERSION', gdal_major_version),
 #        ('GDAL_MINOR_VERSION', gdal_minor_version)]}
 
-if not os.name == "nt":
+if os.name != "nt":
     # These options fail on Windows if using Visual Studio
     ext_options['extra_compile_args'] = ['-Wno-unused-parameter',
                                          '-Wno-unused-function']

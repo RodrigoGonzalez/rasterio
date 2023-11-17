@@ -39,7 +39,7 @@ class TestThreading(unittest.TestCase):
 
     def test_reliability(self):
         """Allow for nondeterminism of race condition"""
-        for i in range(3):
+        for _ in range(3):
             self.test_multiopen()
 
 
